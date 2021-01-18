@@ -51,7 +51,7 @@ public class Cliente {
                 //Se libera el flujo
                 pw.flush();
                 //Se cierra el flujo
-
+                
             }
 
             //Se cierran los flujos de entrada

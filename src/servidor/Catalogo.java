@@ -40,36 +40,28 @@ public class Catalogo {
     }
 
     public boolean verificarStock(String nombre, int cantidad) {
-        for (Producto producto : catalogo) {
-            if (producto.getNombre().equalsIgnoreCase(nombre)) {
-                if (producto.getCantidad() >= cantidad) {
-                    return true;
-                }
-            }
-        }
-        return false;
+        return catalogo.stream().filter((producto) -> (producto.getNombre().equalsIgnoreCase(nombre))).anyMatch((producto) -> (producto.getCantidad() >= cantidad));
     }
 
     public boolean verificarCompra(String nombre) {
-        for (Producto producto : catalogo) {
-            if (producto.getNombre().equalsIgnoreCase(nombre)) {
-                return true;
-            }
-        }
-        return false;
+        return catalogo.stream().anyMatch((producto) -> (producto.getNombre().equalsIgnoreCase(nombre)));
     }
 
     public Producto getCompra(String nombre, int cantidad) {
         Producto p = new Producto();
-        for (Producto producto : catalogo) {
-            if (producto.getNombre().equalsIgnoreCase(nombre)) {
-                p.setNombre(producto.getNombre());
-                p.setCantidad(cantidad);
-                p.setDescripcion(producto.getDescripcion());
-                p.setPrecio(producto.getPrecio());
-                p.setUrlImagen(producto.getUrlImagen());
-            }
-        }
+        catalogo.stream().filter((producto) -> (producto.getNombre().equalsIgnoreCase(nombre))).map((producto) -> {
+            p.setNombre(producto.getNombre());
+            return producto;
+        }).map((producto) -> {
+            p.setCantidad(cantidad);
+            p.setDescripcion(producto.getDescripcion());
+            return producto;
+        }).map((producto) -> {
+            p.setPrecio(producto.getPrecio());
+            return producto;
+        }).forEachOrdered((producto) -> {
+            p.setUrlImagen(producto.getUrlImagen());
+        });
         return p;
     }
 
@@ -85,24 +77,28 @@ public class Catalogo {
         }
         return mensaje;
     }
-
+    
     public ArrayList<Producto> getCatalogoNoBase() {
         return catalogo;
+    }
+    
+    public void vender(ArrayList<Producto> venta){
+        venta.forEach((Producto productoVenta) -> {
+            catalogo.stream().filter((productoCatalogo) -> (productoVenta.getNombre().equals(productoCatalogo.getNombre()))).forEachOrdered((productoCatalogo) -> {
+                productoCatalogo.setCantidad(productoCatalogo.getCantidad()-productoVenta.getCantidad());
+            });
+        });
     }
 
     public ArrayList<Producto> getCatalogo() {
         catalogo = new ArrayList<>();
-
         Connection conn = null;
-
         try {
             // The newInstance() call is a work around for some
             // broken Java implementations
             Class.forName("com.mysql.cj.jdbc.Driver").newInstance();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+        } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
         }
-
         try {
             PreparedStatement pr = null;
             ResultSet rs = null;
