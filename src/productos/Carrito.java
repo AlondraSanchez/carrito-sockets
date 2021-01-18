@@ -23,10 +23,6 @@ public class Carrito {
         carrito = new ArrayList<>();
     }
 
-    public ArrayList<Producto> getCarrito() {
-        return carrito;
-    }
-
     public void addProduct(Producto p) {
         carrito.add(p);
     }

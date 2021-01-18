@@ -6,6 +6,9 @@
 package cliente;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -32,26 +35,68 @@ public class Cliente {
             String peticion = "";
             BufferedReader br2 = new BufferedReader(new InputStreamReader(cl.getInputStream()));
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(cl.getOutputStream()));
-            String mensaje = br2.readLine();
-            System.out.println(mensaje);
+            String mensaje;
             while (!peticion.equalsIgnoreCase("salir") && !peticion.equalsIgnoreCase("n")) {
                 br2 = new BufferedReader(new InputStreamReader(cl.getInputStream()));
                 //Se lee el mensaje recibido
-
+                boolean bandera = false;
                 while (!(mensaje = br2.readLine()).equals("\t")) {
+                    if (mensaje.contains("Enviando recibo")) {
+                        bandera = true;
+                    }
                     System.out.println(mensaje);
                 }
 
-                System.out.println(mensaje);
+                //System.out.println(mensaje);
+                if (!bandera) {
 
-                peticion = br1.readLine();
+                    peticion = br1.readLine();
 
-                //Se imprime el mensaje con un salto de línea
-                pw.println(peticion);
-                //Se libera el flujo
-                pw.flush();
-                //Se cierra el flujo
-                
+                    //Se imprime el mensaje con un salto de línea
+                    pw.println(peticion);
+                    //Se libera el flujo
+                    pw.flush();
+                    //Se cierra el flujo
+                } else {
+                    DataInputStream dis = new DataInputStream(cl.getInputStream());
+                    //Arreglo de bytes donde se especifica la cantidad de bytes que se irán recibiendo
+                    byte b[] = new byte[1024];
+                    //Se obtiene el nombre del archivo recibido
+                    String nombre = dis.readUTF();
+                    System.out.println("Recibiendo el archivo: " + nombre);
+                    //Se lee la longitud del archivo recibido
+                    long tam = dis.readLong();
+                    //Se crea un flujo de datos para escribir el archivo recibido
+                    DataOutputStream dos = new DataOutputStream(new FileOutputStream(nombre));
+                    //Contador para los bytes recibidos
+                    long recibidos = 0;
+                    //Variable para obtener el flujo de bytes del cliente
+                    int n;
+                    //Bucle para recibir los datos que envía el cliente
+                    while (recibidos < tam) {
+                        //Se lee un flujo de bytes
+                        n = dis.read(b);
+                        //Se escribe la información en el archivo creado
+                        dos.write(b, 0, n);
+                        //Se libera el flujo de información
+                        dos.flush();
+                        //Aumenta el contador de bytes recibidos
+                        recibidos += n;
+                    }//Fin while
+                    System.out.println("Archivo recibido.");
+//                    dos.close();
+//                    dis.close();
+
+                    peticion = "ok";
+
+                    //Se imprime el mensaje con un salto de línea
+                    pw.println(peticion);
+                    //Se libera el flujo
+                    pw.flush();
+                    //Se cierra el flujo
+
+                }
+
             }
 
             //Se cierran los flujos de entrada

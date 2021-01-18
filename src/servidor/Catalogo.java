@@ -92,7 +92,7 @@ public class Catalogo {
 
     public ArrayList<Producto> getCatalogo() {
         catalogo = new ArrayList<>();
-        Connection conn = null;
+        Connection conn;
         try {
             // The newInstance() call is a work around for some
             // broken Java implementations
@@ -100,18 +100,20 @@ public class Catalogo {
         } catch (ClassNotFoundException | IllegalAccessException | InstantiationException ex) {
         }
         try {
-            PreparedStatement pr = null;
-            ResultSet rs = null;
+            PreparedStatement pr;
+            ResultSet rs;
 
             conn = DriverManager.getConnection("jdbc:mysql://localhost/catalogo?user=root&password=n0m3l0&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&&&useSSL=false");
 
-            String sql = "";
+            String sql = "select * from producto";
             //Se ejecuta la sentencia
             pr = conn.prepareStatement(sql);
             rs = pr.executeQuery();
             //Entra al bucle cuando hay resultados
             while (rs.next()) {
                 Producto p = new Producto();
+                p.setNombre(rs.getString("nombre"));
+                p.setCantidad(rs.getInt("cantidad"));
 //                p.setIdMedicamento(rs.getInt("id_medicamento"));
 //                p.setSucursal(new Sucursal().getSucursalById(rs.getInt("sucursal")));
 //                p.setNombre(rs.getString("nombre"));
