@@ -5,14 +5,12 @@
  */
 package servidor;
 
-import productos.Producto;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import productos.Carrito;
 
 /**
@@ -26,33 +24,26 @@ public class Servidor {
         int puerto = 7000;
         //Inicializar catalogo
         Catalogo c = new Catalogo();
-        ArrayList<Producto> catalogo = c.getCatalogoNoBase();
 
         try {
-            //Se crea un socket server ligado al puerto 7000
             ServerSocket s = new ServerSocket(puerto);
-            //Se crea un bucle infinito para recibir solicitudes de conexión de clientes
             for (;;) {
-                //Se crea un socket para la solicitud del cliente aceptada
                 Socket cl = s.accept();
-                //Se muestra información del cliente
                 System.out.println("Conexión establecida desde " + cl.getInetAddress() + ":" + cl.getPort());
-                //Se define un flujo de datos para el archivo recibido
 
-                String mensaje = "Bienvenido cliente\n";
+                String mensaje = "Bienvenido cliente";
 
-                //Se liga un PrintWriter al flujo de salida del socket
                 PrintWriter pw = new PrintWriter(new OutputStreamWriter(cl.getOutputStream()), true);
-                //Se imprime el mensaje con un salto de línea
                 pw.println(mensaje);
-                //Se libera el flujo
                 pw.flush();
-                //Se cierra el flujo
-               // pw.close();
 
                 Carrito carrito = new Carrito();
                 String respuesta = "";
-                String opciones = "Opciones:\n1.Ver catalogo\n2.Ver carrito\n";
+                String opciones = "Opciones:"
+                        + "\n1.Ver catalogo"
+                        + "\n2.Ver carrito"
+                        + "\n3.Realizar compra"
+                        + "\n4.Cancelar compra\n\t";
                 while (!respuesta.equalsIgnoreCase("salir")) {
                     pw.println(opciones);
                     pw.flush();
@@ -64,7 +55,7 @@ public class Servidor {
                     switch (respuesta) {
                         case "1": //ver catalogo
                             mensaje = c.viewCatalogo();
-                            mensaje += "Para agregar un producto al carrito escriba el nombre del producto\n";
+                            mensaje += "Para agregar un producto al carrito escriba el nombre del producto\n\t";
                             pw.println(mensaje);
                             pw.flush();
                             comandoCliente = new BufferedReader(new InputStreamReader(cl.getInputStream()));
@@ -72,7 +63,7 @@ public class Servidor {
 
                             if (c.verificarCompra(compra)) {
 
-                                mensaje = "Ingrese la cantidad";
+                                mensaje = "Ingrese la cantidad\n\t";
                                 pw.println(mensaje);
                                 pw.flush();
 
@@ -85,7 +76,6 @@ public class Servidor {
                                         mensaje = "Producto agregado exitosamente";
                                     } else {
                                         mensaje = "Stock insuficiente, el producto no ha sido agregado a su carrito";
-
                                     }
                                 } catch (Exception e) {
                                     mensaje = "Cantidad no valida, el producto no ha sido agregado a su carrito";
@@ -93,16 +83,24 @@ public class Servidor {
                             } else {
                                 mensaje = "Producto no valido";
                             }
-
-                            pw.println(mensaje);
-                            
-                            pw.flush();
                             break;
                         case "2": //ver carrito
-                            pw = new PrintWriter(new OutputStreamWriter(cl.getOutputStream()));
+                            mensaje = carrito.verCarrito();
+                            break;
+                        case "3": // Hacer compra
                             
                             break;
+                        case "4": // Cancelar compra
+                            carrito = new Carrito();
+                            mensaje = "Carrito vaciado";
+                            break;
                     }
+                    mensaje += "\nDesea continuar?"
+                            + "\nY.Si"
+                            + "\nN.No\n\t";
+                    pw.println(mensaje);
+                    pw.flush();
+                    respuesta = comandoCliente.readLine().equalsIgnoreCase("n") ? "salir" : "cualquiercosa";
                 }
                 pw.close();
                 cl.close();

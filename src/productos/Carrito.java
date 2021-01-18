@@ -32,12 +32,13 @@ public class Carrito {
     }
 
     public String verCarrito() {
+        System.out.println(carrito.size());
         String mensaje = "-----------------------------------------\n";
         for (Producto producto : carrito) {
             mensaje += "Nombre: " + producto.getNombre() + "\n";
             mensaje += "\tPrecio: " + producto.getPrecio() + "\n";
             mensaje += "\tDescripcion: " + producto.getDescripcion() + "\n";
-            mensaje += "\tCantidad en stock: " + producto.getCantidad() + "\n";
+            mensaje += "\tCantidad: " + producto.getCantidad() + "\n";
             mensaje += "\tImagen disponible en " + producto.getUrlImagen() + "\n";
             mensaje += "-----------------------------------------\n";
         }

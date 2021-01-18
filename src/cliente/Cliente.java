@@ -34,20 +34,24 @@ public class Cliente {
             PrintWriter pw = new PrintWriter(new OutputStreamWriter(cl.getOutputStream()));
             String mensaje = br2.readLine();
             System.out.println(mensaje);
-            while (!peticion.equalsIgnoreCase("salir")) {
+            while (!peticion.equalsIgnoreCase("salir") && !peticion.equalsIgnoreCase("n")) {
                 br2 = new BufferedReader(new InputStreamReader(cl.getInputStream()));
                 //Se lee el mensaje recibido
-                mensaje = br2.readLine();
+
+                while (!(mensaje = br2.readLine()).equals("\t")) {
+                    System.out.println(mensaje);
+                }
+
                 System.out.println(mensaje);
 
                 peticion = br1.readLine();
-                
+
                 //Se imprime el mensaje con un salto de línea
                 pw.println(peticion);
                 //Se libera el flujo
                 pw.flush();
                 //Se cierra el flujo
-                
+
             }
 
             //Se cierran los flujos de entrada

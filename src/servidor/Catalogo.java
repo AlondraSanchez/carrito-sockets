@@ -29,19 +29,20 @@ public class Catalogo {
         p.setNombre("Koka");
         p.setPrecio(15.0);
         p.setUrlImagen("");
-
+        catalogo.add(p);
         p = new Producto();
         p.setCantidad(5);
         p.setDescripcion("Son cheetos");
         p.setNombre("Cheetos");
         p.setPrecio(10.0);
         p.setUrlImagen("");
+        catalogo.add(p);
     }
 
     public boolean verificarStock(String nombre, int cantidad) {
         for (Producto producto : catalogo) {
             if (producto.getNombre().equalsIgnoreCase(nombre)) {
-                if (producto.getCantidad() <= cantidad) {
+                if (producto.getCantidad() >= cantidad) {
                     return true;
                 }
             }
@@ -57,11 +58,11 @@ public class Catalogo {
         }
         return false;
     }
-    
-    public Producto getCompra(String nombre, int cantidad){
+
+    public Producto getCompra(String nombre, int cantidad) {
         Producto p = new Producto();
         for (Producto producto : catalogo) {
-            if(producto.getNombre().equalsIgnoreCase(nombre)){
+            if (producto.getNombre().equalsIgnoreCase(nombre)) {
                 p.setNombre(producto.getNombre());
                 p.setCantidad(cantidad);
                 p.setDescripcion(producto.getDescripcion());
@@ -125,14 +126,12 @@ public class Catalogo {
 //                p.setPrecio(rs.getDouble("precio"));
                 catalogo.add(p);
             }
-
         } catch (SQLException ex) {
             // handle any errors
             System.out.println("SQLException: " + ex.getMessage());
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
-
         return catalogo;
     }
 }
