@@ -15,6 +15,10 @@ public class Carrito {
 
     private ArrayList<Producto> carrito;
 
+    public ArrayList<Producto> getCarrito() {
+        return carrito;
+    }
+
     public Carrito() {
         carrito = new ArrayList<>();
     }
