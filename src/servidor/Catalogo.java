@@ -21,23 +21,23 @@ public class Catalogo {
 
     private ArrayList<Producto> catalogo;
 
-    public Catalogo() {
-        catalogo = new ArrayList<>();
-        Producto p = new Producto();
-        p.setCantidad(5);
-        p.setDescripcion("Es una koka");
-        p.setNombre("Koka");
-        p.setPrecio(15.0);
-        p.setUrlImagen("");
-        catalogo.add(p);
-        p = new Producto();
-        p.setCantidad(5);
-        p.setDescripcion("Son cheetos");
-        p.setNombre("Cheetos");
-        p.setPrecio(10.0);
-        p.setUrlImagen("");
-        catalogo.add(p);
-    }
+//    public Catalogo() {
+//        catalogo = new ArrayList<>();
+//        Producto p = new Producto();
+//        p.setCantidad(5);
+//        p.setDescripcion("Es una koka");
+//        p.setNombre("Koka");
+//        p.setPrecio(15.0);
+//        p.setUrlImagen("");
+//        catalogo.add(p);
+//        p = new Producto();
+//        p.setCantidad(5);
+//        p.setDescripcion("Son cheetos");
+//        p.setNombre("Cheetos");
+//        p.setPrecio(10.0);
+//        p.setUrlImagen("");
+//        catalogo.add(p);
+//    }
 
     public boolean verificarStock(String nombre, int cantidad) {
         return catalogo.stream().filter((producto) -> (producto.getNombre().equalsIgnoreCase(nombre))).anyMatch((producto) -> (producto.getCantidad() >= cantidad));
@@ -90,7 +90,7 @@ public class Catalogo {
         });
     }
 
-    public ArrayList<Producto> getCatalogo() {
+    public Catalogo() {
         catalogo = new ArrayList<>();
         Connection conn;
         try {
@@ -103,9 +103,9 @@ public class Catalogo {
             PreparedStatement pr;
             ResultSet rs;
 
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/catalogo?user=root&password=n0m3l0&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&&&useSSL=false");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/tienda?user=root&password=root&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&&&useSSL=false");
 
-            String sql = "select * from producto";
+            String sql = "select * from Producto";
             //Se ejecuta la sentencia
             pr = conn.prepareStatement(sql);
             rs = pr.executeQuery();
@@ -114,14 +114,9 @@ public class Catalogo {
                 Producto p = new Producto();
                 p.setNombre(rs.getString("nombre"));
                 p.setCantidad(rs.getInt("cantidad"));
-//                p.setIdMedicamento(rs.getInt("id_medicamento"));
-//                p.setSucursal(new Sucursal().getSucursalById(rs.getInt("sucursal")));
-//                p.setNombre(rs.getString("nombre"));
-//                p.setCantidad(rs.getInt("cantidad"));
-//                p.setFecha_caducidad(rs.getDate("caducidad"));
-//                p.setPresentacion(rs.getString("presentacion"));
-//                p.setConcentracion(rs.getString("concentracion"));
-//                p.setPrecio(rs.getDouble("precio"));
+                p.setUrlImagen(rs.getString("urlImagen"));
+                p.setPrecio((rs.getDouble("precio")));
+                p.setDescripcion(rs.getString("descripcion"));
                 catalogo.add(p);
             }
         } catch (SQLException ex) {
@@ -130,6 +125,5 @@ public class Catalogo {
             System.out.println("SQLState: " + ex.getSQLState());
             System.out.println("VendorError: " + ex.getErrorCode());
         }
-        return catalogo;
     }
 }
