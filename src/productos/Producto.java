@@ -1,14 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package productos;
 
-/**
- *
- * @author user1
- */
 public class Producto {
     private String nombre;
     private int cantidad;
@@ -55,6 +46,4 @@ public class Producto {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
-    
-    
 }

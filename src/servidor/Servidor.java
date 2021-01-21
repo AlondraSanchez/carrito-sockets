@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package servidor;
 
 import com.itextpdf.text.DocumentException;
@@ -22,10 +17,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import productos.Carrito;
 
-/**
- *
- * @author user1
- */
 public class Servidor {
 
     public static void main(String[] args) {
@@ -45,8 +36,7 @@ public class Servidor {
 
                     String mensaje;
 
-                    pw = new PrintWriter(new OutputStreamWriter(cl.getOutputStream()), true);
-//                    
+                    pw = new PrintWriter(new OutputStreamWriter(cl.getOutputStream()), true);                  
 
                     Carrito carrito = new Carrito();
                     String respuesta = "";
@@ -144,10 +134,7 @@ public class Servidor {
                                             porcentaje = (int) (enviados * 100 / tam);
                                             System.out.println("Enviando: " + porcentaje + "%");
                                         }// Fin while
-//                                            dos.close();
-//                                            dis.close();
 
-                                        //****************
                                         mensaje = "";
                                         carrito = new Carrito();
                                         break;
